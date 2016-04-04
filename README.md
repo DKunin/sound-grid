@@ -1,0 +1,9 @@
+# Simple sound grid
+
+Featuring farm animals for now.
+
+Just a side project for my son, and checkign out yo-yo view library.
+
+In heavy development!
+
+For now no media

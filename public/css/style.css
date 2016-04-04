@@ -1,0 +1,52 @@
+.music-button {
+    padding: 80px;
+    line-height: 0;
+    border: 10px solid white;
+    position: relative;
+}
+
+.music-button:focus {
+    outline: none;
+    border-color: green; 
+}
+
+.music-button-bg {
+    max-width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    
+}
+
+html, body, .main-holder {
+    height: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+.allstop {
+    background-color: red;
+}
+
+.image-preview img {
+  max-width: 150px;
+  max-height: 150px;
+}
+
+.images-list {
+    max-height: 100%;
+    overflow: scroll;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.strech-vert {
+    height: 100%;
+}
+
+.main-grid {
+    max-width: 80%;
+    margin: 0 auto;
+}
