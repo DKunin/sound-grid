@@ -11,7 +11,7 @@ function chunk(array, n) {
 
 module.exports = function main(state, actions) {
     return yo`<div class="col-xs-12 main-grid">
-        <div onclick=${actions.setPage.bind(this, 'editor')}>editor</div>
+        <a href='/editor' class='hidden'>editor</a>
               ${chunk(state.rows || [], 3)
                 .map(singleRow => yo`<div class="row middle-xs">${singleRow.map(singleButton => button(singleButton, actions))}</div>`)}
         </div>`;

@@ -14,11 +14,12 @@ var allowCrossDomain = function(req, res, next) {
 };
 
 app.use(allowCrossDomain);
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('./public'));
 
 app.get('/rows', (req, res) => fs.createReadStream('./rows.json').pipe(res));
+
 app.get('/resource/:name', (req, res) => {
     fs.readdir(`./public/media/${req.params.name}`, (err, data) => {
         res.json(data);

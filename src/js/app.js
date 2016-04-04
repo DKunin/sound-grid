@@ -31,16 +31,14 @@ page('/', () => {
 page('/editor', () => {
     actions.setPage('editor');
     yo.update(el, editor(store.get(), actions));
-    let containerArray = [document.querySelector('.draggable-images')].concat(Array.from(document.querySelectorAll('.droppable-rows td')));
+    let containerArray = Array.from(document.querySelectorAll('.draggable-images')).concat(Array.from(document.querySelectorAll('.droppable-rows td')));
     let drake = dragula(containerArray, {
         accepts: () => true,
         revertOnSpill: true,
         copy: true
     }).on('drop', (el, target) => {
         drake.cancel();
-        const source = el.querySelector('img').getAttribute('src');
-        const targ = target.parentNode.dataset.id;
-        actions.updateSource({ id: targ, propName: 'image', propValue: source });
+        actions.updateSource({ id: target.parentNode.dataset.id, propName: el.dataset.type, propValue: el.dataset.value });
     });
 });
 

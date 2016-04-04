@@ -3,6 +3,16 @@
     line-height: 0;
     border: 10px solid white;
     position: relative;
+    overflow: hidden;
+    background-size: cover;
+}
+
+.music-button label {
+    display: none;
+}
+
+.music-button.show-label label {
+    display: block;
 }
 
 .music-button:focus {
@@ -49,4 +59,8 @@ html, body, .main-holder {
 .main-grid {
     max-width: 80%;
     margin: 0 auto;
+}
+
+.hidden {
+    display: none;
 }

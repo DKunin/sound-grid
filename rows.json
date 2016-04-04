@@ -2,43 +2,43 @@
     {
         "id": "1",
         "name": "Корова",
-        "sound": "-",
-        "image": "-"
+        "sound": "cow.mp3",
+        "image": "cow.jpg"
     },
     {
         "id": "2",
         "name": "Коза",
-        "sound": "-",
+        "sound": "goat.mp3",
         "image": "-"
     },
     {
         "id": "3",
         "name": "Свинья",
-        "sound": "-",
+        "sound": "pig.mp3",
         "image": "-"
     },
     {
         "id": "4",
         "name": "Собака",
-        "sound": "-",
+        "sound": "dog.mp3",
         "image": "-"
     },
     {
         "id": "5",
         "name": "Кошка",
-        "sound": "-",
+        "sound": "cat.mp3",
         "image": "-"
     },
     {
         "id": "6",
         "name": "Лошадь",
-        "sound": "-",
+        "sound": "horse.mp3",
         "image": "-"
     },
     {
         "id": "7",
         "name": "Овца",
-        "sound": "-",
+        "sound": "sheep.mp3",
         "image": "-"
     },
     {
@@ -50,19 +50,19 @@
     {
         "id": "9",
         "name": "Курица",
-        "sound": "-",
+        "sound": "chicken.mp3",
         "image": "-"
     },
     {
         "id": "10",
         "name": "Мышь",
-        "sound": "-",
+        "sound": "geese.mp3",
         "image": "-"
     },
     {
         "id": "11",
         "name": "Гусь",
-        "sound": "-",
+        "sound": "geese.mp3",
         "image": "-"
     },
     {

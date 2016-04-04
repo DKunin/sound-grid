@@ -103,7 +103,7 @@
 	(0, _page2['default'])('/editor', function () {
 	    _actionsActions2['default'].setPage('editor');
 	    _yoYo2['default'].update(el, (0, _pagesEditor2['default'])(_storeStore2['default'].get(), _actionsActions2['default']));
-	    var containerArray = [document.querySelector('.draggable-images')].concat(Array.from(document.querySelectorAll('.droppable-rows td')));
+	    var containerArray = Array.from(document.querySelectorAll('.draggable-images')).concat(Array.from(document.querySelectorAll('.droppable-rows td')));
 	    var drake = (0, _dragula2['default'])(containerArray, {
 	        accepts: function accepts() {
 	            return true;
@@ -112,9 +112,7 @@
 	        copy: true
 	    }).on('drop', function (el, target) {
 	        drake.cancel();
-	        var source = el.querySelector('img').getAttribute('src');
-	        var targ = target.parentNode.dataset.id;
-	        _actionsActions2['default'].updateSource({ id: targ, propName: 'image', propValue: source });
+	        _actionsActions2['default'].updateSource({ id: target.parentNode.dataset.id, propName: el.dataset.type, propValue: el.dataset.value });
 	    });
 	});
 
@@ -3790,7 +3788,7 @@
 
 	'use strict';
 
-	var _templateObject = _taggedTemplateLiteral(['<div class="col-xs-12 main-grid">\n        <div onclick=', '>editor</div>\n              ', '\n        </div>'], ['<div class="col-xs-12 main-grid">\n        <div onclick=', '>editor</div>\n              ', '\n        </div>']),
+	var _templateObject = _taggedTemplateLiteral(['<div class="col-xs-12 main-grid">\n        <a href=\'/editor\' class=\'hidden\'>editor</a>\n              ', '\n        </div>'], ['<div class="col-xs-12 main-grid">\n        <a href=\'/editor\' class=\'hidden\'>editor</a>\n              ', '\n        </div>']),
 	    _templateObject2 = _taggedTemplateLiteral(['<div class="row middle-xs">', '</div>'], ['<div class="row middle-xs">', '</div>']);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -3818,7 +3816,7 @@
 	}
 
 	module.exports = function main(state, actions) {
-	    return (0, _yoYo2['default'])(_templateObject, actions.setPage.bind(this, 'editor'), chunk(state.rows || [], 3).map(function (singleRow) {
+	    return (0, _yoYo2['default'])(_templateObject, chunk(state.rows || [], 3).map(function (singleRow) {
 	        return (0, _yoYo2['default'])(_templateObject2, singleRow.map(function (singleButton) {
 	            return (0, _componentsSingleButton2['default'])(singleButton, actions);
 	        }));
@@ -3831,7 +3829,7 @@
 
 	'use strict';
 
-	var _templateObject = _taggedTemplateLiteral(['<button class="col-xs-4 music-button" data-name=', ' onclick=', ' ontouchstart=', '>\n      <img class="music-button-bg" src="', '"/>\n      ', '</button>'], ['<button class="col-xs-4 music-button" data-name=', ' onclick=', ' ontouchstart=', '>\n      <img class="music-button-bg" src="', '"/>\n      ', '</button>']);
+	var _templateObject = _taggedTemplateLiteral(['<button class="col-xs-4 music-button ', '" data-name=', ' data-sound=', ' onclick=', ' ontouchstart=', ' style="background-image: url(\'/media/images/', '\');">\n      <label>', '</label></button>'], ['<button class="col-xs-4 music-button ', '" data-name=', ' data-sound=', ' onclick=', ' ontouchstart=', ' style="background-image: url(\'/media/images/', '\');">\n      <label>', '</label></button>']);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -3846,7 +3844,7 @@
 	var _modulesPlaysound2 = _interopRequireDefault(_modulesPlaysound);
 
 	module.exports = function singleButton(item, actions) {
-	  return (0, _yoYo2['default'])(_templateObject, item.name, _modulesPlaysound2['default'], _modulesPlaysound2['default'], item.image, item.name);
+	  return (0, _yoYo2['default'])(_templateObject, item.image === '-' ? 'show-label' : '', item.name, item.sound, _modulesPlaysound2['default'], _modulesPlaysound2['default'], item.image, item.name);
 	};
 
 /***/ },
@@ -3858,11 +3856,11 @@
 	module.exports = function playSound(event) {
 	    var audio = document.getElementById('audioplayer');
 	    audio.pause();
-	    if (event.target.dataset.name === 'stop' || !event.target.dataset.name) {
+	    if (event.target.dataset.name === 'stop' || !event.target.dataset.sound) {
 	        return;
 	    }
-	    console.log(event.target, audio);
-	    audio.src = '/media/' + event.target.dataset.name + '.mp3';
+
+	    audio.src = '/media/sounds/' + event.target.dataset.sound;
 	    if (audio.readyState > 0) {
 	        audio.currentTime = 5;
 	    }
@@ -3876,8 +3874,9 @@
 	'use strict';
 
 	var _templateObject = _taggedTemplateLiteral(['<tr data-id="', '">\n        <td data-label="index">', '</td>\n        <td data-label="name">', '</td>\n        <td data-label="image">', '</td>\n        <td data-label="sound">', '</td>\n    </tr>'], ['<tr data-id="', '">\n        <td data-label="index">', '</td>\n        <td data-label="name">', '</td>\n        <td data-label="image">', '</td>\n        <td data-label="sound">', '</td>\n    </tr>']),
-	    _templateObject2 = _taggedTemplateLiteral(['<div class="col-xs-12 strech-vert">\n            <h2>Editor</h2>\n            <div class="row middle-xs strech-vert">\n                <ul class="col-xs-6 draggable-images images-list">\n                    ', '\n                </ul>\n                <div class="col-xs-6">\n                    <table>\n                    <thead>\n                        <tr>\n                            <td>#</td>\n                            <td>Название</td>\n                            <td>Иконка</td>\n                            <td>Звук</td>\n                        </tr>\n                    </thead>\n                    <tbody class="droppable-rows">\n                        ', '\n                    </tbody>\n                    </table>\n                </div>\n            </div>\n            <div class="row middle-xs">\n                <div class="col-xs-6">\n                    <button onclick=', '>Добавить строку</button>\n                </div>\n            </div>\n            <div class="row middle-xs">\n                <div class="col-xs-6">\n                    <code>\n                        <pre>\n                            ', '\n                        </pre>\n                    </code>\n                </div>\n            </div>\n        </div>'], ['<div class="col-xs-12 strech-vert">\n            <h2>Editor</h2>\n            <div class="row middle-xs strech-vert">\n                <ul class="col-xs-6 draggable-images images-list">\n                    ', '\n                </ul>\n                <div class="col-xs-6">\n                    <table>\n                    <thead>\n                        <tr>\n                            <td>#</td>\n                            <td>Название</td>\n                            <td>Иконка</td>\n                            <td>Звук</td>\n                        </tr>\n                    </thead>\n                    <tbody class="droppable-rows">\n                        ', '\n                    </tbody>\n                    </table>\n                </div>\n            </div>\n            <div class="row middle-xs">\n                <div class="col-xs-6">\n                    <button onclick=', '>Добавить строку</button>\n                </div>\n            </div>\n            <div class="row middle-xs">\n                <div class="col-xs-6">\n                    <code>\n                        <pre>\n                            ', '\n                        </pre>\n                    </code>\n                </div>\n            </div>\n        </div>']),
-	    _templateObject3 = _taggedTemplateLiteral(['<li class="image-preview"><img src="/media/images/', '"/></li>'], ['<li class="image-preview"><img src="/media/images/', '"/></li>']);
+	    _templateObject2 = _taggedTemplateLiteral(['<div class="col-xs-12 strech-vert">\n            <h2>Editor</h2>\n            <div class="row middle-xs strech-vert">\n                <ul class="col-xs-3 draggable-images images-list">\n                    ', '\n                </ul>\n                <ul class="col-xs-3 sounds-list draggable-images">\n                    ', '\n                </ul>\n                <div class="col-xs-6">\n                    <table>\n                    <thead>\n                        <tr>\n                            <td>#</td>\n                            <td>Название</td>\n                            <td>Иконка</td>\n                            <td>Звук</td>\n                        </tr>\n                    </thead>\n                    <tbody class="droppable-rows">\n                        ', '\n                    </tbody>\n                    </table>\n                </div>\n            </div>\n            <div class="row middle-xs">\n                <div class="col-xs-6">\n                    <button onclick=', '>Добавить строку</button>\n                </div>\n            </div>\n            <div class="row middle-xs">\n                <div class="col-xs-6">\n                    <code>\n                        <pre>\n                            ', '\n                        </pre>\n                    </code>\n                </div>\n            </div>\n        </div>'], ['<div class="col-xs-12 strech-vert">\n            <h2>Editor</h2>\n            <div class="row middle-xs strech-vert">\n                <ul class="col-xs-3 draggable-images images-list">\n                    ', '\n                </ul>\n                <ul class="col-xs-3 sounds-list draggable-images">\n                    ', '\n                </ul>\n                <div class="col-xs-6">\n                    <table>\n                    <thead>\n                        <tr>\n                            <td>#</td>\n                            <td>Название</td>\n                            <td>Иконка</td>\n                            <td>Звук</td>\n                        </tr>\n                    </thead>\n                    <tbody class="droppable-rows">\n                        ', '\n                    </tbody>\n                    </table>\n                </div>\n            </div>\n            <div class="row middle-xs">\n                <div class="col-xs-6">\n                    <button onclick=', '>Добавить строку</button>\n                </div>\n            </div>\n            <div class="row middle-xs">\n                <div class="col-xs-6">\n                    <code>\n                        <pre>\n                            ', '\n                        </pre>\n                    </code>\n                </div>\n            </div>\n        </div>']),
+	    _templateObject3 = _taggedTemplateLiteral(['<li class="image-preview" data-type="image" data-value="', '">\n                        <img src="/media/images/', '"/>\n                    </li>'], ['<li class="image-preview" data-type="image" data-value="', '">\n                        <img src="/media/images/', '"/>\n                    </li>']),
+	    _templateObject4 = _taggedTemplateLiteral(['<li class="sound-preivew" data-type="sound" data-value="', '">\n                        ', '\n                        </li>'], ['<li class="sound-preivew" data-type="sound" data-value="', '">\n                        ', '\n                        </li>']);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -3899,7 +3898,9 @@
 	module.exports = function main(state, actions) {
 	    console.log(state);
 	    return (0, _yoYo2['default'])(_templateObject2, state.images.map(function (singleImage) {
-	        return (0, _yoYo2['default'])(_templateObject3, singleImage);
+	        return (0, _yoYo2['default'])(_templateObject3, singleImage, singleImage);
+	    }), state.sounds.map(function (singleSound) {
+	        return (0, _yoYo2['default'])(_templateObject4, singleSound, singleSound);
 	    }), state.rows.map(singleRow), actions.addRow, JSON.stringify(state.rows, null, 4));
 	};
 
