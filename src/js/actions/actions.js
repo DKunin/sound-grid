@@ -21,14 +21,6 @@ module.exports = {
                 state.get().set('images', data.body);
             });
     },
-    addNumber() {
-        let prevState = state.get().numbers;
-        state.get().set('numbers', prevState.concat([Math.random()]));
-    },
-    addCounter() {
-        let prevState = state.get().counter;
-        state.get().set('counter', prevState + 1);
-    },
     updateSource(updateObject) {
         request
             .put('/rows')
@@ -47,10 +39,10 @@ module.exports = {
     setPage(page) {
         state.get().set('page', page);
     },
-    tick(number) {
-        console.log('tick', number);
+    toggleSound(status) {
+        state.get().set('playing', status);
     },
-    selectAction(number) {
-        state.get().set('selected', number);
+    setActive(id) {
+        state.get().set('active', id);
     }
 };

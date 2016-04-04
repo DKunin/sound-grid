@@ -64,23 +64,22 @@
 
 	var _pagesMain2 = _interopRequireDefault(_pagesMain);
 
-	var _pagesEditor = __webpack_require__(26);
+	var _pagesEditor = __webpack_require__(27);
 
 	var _pagesEditor2 = _interopRequireDefault(_pagesEditor);
 
-	var _pagesNotfound = __webpack_require__(27);
+	var _pagesNotfound = __webpack_require__(28);
 
 	var _pagesNotfound2 = _interopRequireDefault(_pagesNotfound);
 
-	var _page = __webpack_require__(28);
+	var _page = __webpack_require__(29);
 
 	var _page2 = _interopRequireDefault(_page);
 
-	var _dragula = __webpack_require__(32);
+	var _dragula = __webpack_require__(33);
 
 	var _dragula2 = _interopRequireDefault(_dragula);
 
-	var drake;
 	var el = (0, _pagesMain2['default'])(_storeStore2['default'].get(), _actionsActions2['default']);
 
 	_storeStore2['default'].on('update', function (newValue) {
@@ -124,27 +123,18 @@
 	setTimeout(function () {
 	    // page('/editor');
 	}, 200);
+
 	_actionsActions2['default'].startModule();
 
 	var audio = document.getElementById('audioplayer');
-	audio.addEventListener('play', function () {
-	    var buttonClass = event.target.dataset.button;
-	    Array.from(document.querySelectorAll('.music-button')).forEach(function (oneButton) {
-	        if (!oneButton.classList.contains(buttonClass)) {
-	            oneButton.classList.add('dim');
-	        };
-	    });
-	    // console.log(document.querySelector(`.`));
+	audio.addEventListener('durationchange', function () {
+	    _actionsActions2['default'].toggleSound(true);
+	    // actions.setActive(event.target.dataset.id);
 	});
 	audio.addEventListener('ended', function () {
-	    Array.from(document.querySelectorAll('.music-button')).forEach(function (oneButton) {
-	        oneButton.classList.remove('dim');
-	    });
+	    _actionsActions2['default'].toggleSound(false);
+	    // actions.setActive(false);
 	});
-
-	document.body.addEventListener('touchmove', function (event) {
-	    event.preventDefault();
-	}, false);
 
 /***/ },
 /* 1 */
@@ -1175,6 +1165,8 @@
 	    rows: [],
 	    images: [],
 	    sounds: [],
+	    active: false,
+	    playing: false,
 	    page: 'main'
 	};
 
@@ -2265,14 +2257,6 @@
 	            _storeStore2['default'].get().set('images', data.body);
 	        });
 	    },
-	    addNumber: function addNumber() {
-	        var prevState = _storeStore2['default'].get().numbers;
-	        _storeStore2['default'].get().set('numbers', prevState.concat([Math.random()]));
-	    },
-	    addCounter: function addCounter() {
-	        var prevState = _storeStore2['default'].get().counter;
-	        _storeStore2['default'].get().set('counter', prevState + 1);
-	    },
 	    updateSource: function updateSource(updateObject) {
 	        _superagent2['default'].put('/rows').send(updateObject).end(function (err, data) {
 	            _storeStore2['default'].get().set('rows', data.body);
@@ -2286,11 +2270,11 @@
 	    setPage: function setPage(page) {
 	        _storeStore2['default'].get().set('page', page);
 	    },
-	    tick: function tick(number) {
-	        console.log('tick', number);
+	    toggleSound: function toggleSound(status) {
+	        _storeStore2['default'].get().set('playing', status);
 	    },
-	    selectAction: function selectAction(number) {
-	        _storeStore2['default'].get().set('selected', number);
+	    setActive: function setActive(id) {
+	        _storeStore2['default'].get().set('active', id);
 	    }
 	};
 
@@ -3808,7 +3792,7 @@
 
 	'use strict';
 
-	var _templateObject = _taggedTemplateLiteral(['<div class="col-xs-12 main-grid">\n              ', '\n        </div>'], ['<div class="col-xs-12 main-grid">\n              ', '\n        </div>']),
+	var _templateObject = _taggedTemplateLiteral(['<div class="col-xs-12 main-grid ', '">\n              ', '\n        </div>'], ['<div class="col-xs-12 main-grid ', '">\n              ', '\n        </div>']),
 	    _templateObject2 = _taggedTemplateLiteral(['<div class="row middle-xs half-screen-height">', '</div>'], ['<div class="row middle-xs half-screen-height">', '</div>']);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -3823,24 +3807,16 @@
 
 	var _componentsSingleButton2 = _interopRequireDefault(_componentsSingleButton);
 
-	function range(n) {
-	    return Array.apply(null, Array(n)).map(function (x, i) {
-	        return i;
-	    });
-	};
+	var _modulesChunk = __webpack_require__(26);
 
-	function chunk(array, n) {
-	    return range(Math.ceil(array.length / n)).map(function (x, i) {
-	        return array.slice(i * n, i * n + n);
-	    });
-	}
+	var _modulesChunk2 = _interopRequireDefault(_modulesChunk);
 
 	module.exports = function main(state, actions) {
-	    return (0, _yoYo2['default'])(_templateObject, chunk(state.rows || [], 3).map(function (singleRow) {
-	        return (0, _yoYo2['default'])(_templateObject2, singleRow.map(function (singleButton) {
-	            return (0, _componentsSingleButton2['default'])(singleButton, actions);
-	        }));
+	  return (0, _yoYo2['default'])(_templateObject, state.playing ? 'playing' : '', (0, _modulesChunk2['default'])(state.rows || [], 3).map(function (singleRow) {
+	    return (0, _yoYo2['default'])(_templateObject2, singleRow.map(function (singleButton) {
+	      return (0, _componentsSingleButton2['default'])(singleButton, actions, state);
 	    }));
+	  }));
 	};
 
 /***/ },
@@ -3849,7 +3825,7 @@
 
 	'use strict';
 
-	var _templateObject = _taggedTemplateLiteral(['<button class="button-', ' col-xs-4 music-button ', '" data-name=', ' data-sound=', ' data-button="button-', '" onclick=', ' ontouchstart=', ' style="background-image: url(\'/media/images/', '\');">\n      <label>', '</label></button>'], ['<button class="button-', ' col-xs-4 music-button ', '" data-name=', ' data-sound=', ' data-button="button-', '" onclick=', ' ontouchstart=', ' style="background-image: url(\'/media/images/', '\');">\n      <label>', '</label></button>']);
+	var _templateObject = _taggedTemplateLiteral(['<button\n      class="', ' button-', ' col-xs-4 music-button ', '"\n      data-name=', '\n      data-sound=', '\n      data-button="button-', '"\n      data-id=', '\n      onclick=', '\n      ontouchstart=', '\n      style="background-image: url(\'/media/images/', '\'); ">\n        <label>', '</label>\n      </button>'], ['<button\n      class="', ' button-', ' col-xs-4 music-button ', '"\n      data-name=', '\n      data-sound=', '\n      data-button="button-', '"\n      data-id=', '\n      onclick=', '\n      ontouchstart=', '\n      style="background-image: url(\'/media/images/', '\'); ">\n        <label>', '</label>\n      </button>']);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -3863,8 +3839,8 @@
 
 	var _modulesPlaysound2 = _interopRequireDefault(_modulesPlaysound);
 
-	module.exports = function singleButton(item, actions) {
-	  return (0, _yoYo2['default'])(_templateObject, item.id, item.image === '-' ? 'show-label' : '', item.name, item.sound, item.id, _modulesPlaysound2['default'], _modulesPlaysound2['default'], item.image, item.name);
+	module.exports = function singleButton(item, actions, state) {
+	  return (0, _yoYo2['default'])(_templateObject, item.id == state.active ? 'shine' : '', item.id, item.image === '-' ? 'show-label' : '', item.name, item.sound, item.id, item.id, _modulesPlaysound2['default'].bind(this, state), _modulesPlaysound2['default'].bind(this, state), item.image, item.name);
 	};
 
 /***/ },
@@ -3873,31 +3849,49 @@
 
 	'use strict';
 
-	module.exports = function playSound(event) {
-	    var audio = document.getElementById('audioplayer');
-	    audio.pause();
-	    if (event.target.dataset.name === 'stop' || !event.target.dataset.sound) {
-	        return;
+	module.exports = function playSound(state, event) {
+	    if (state.playing) {
+	        return false;
+	    } else {
+	        var audio = document.getElementById('audioplayer');
+	        audio.pause();
+	        if (event.target.dataset.name === 'stop' || !event.target.dataset.sound) {
+	            return;
+	        }
+	        audio.src = '/media/sounds/' + event.target.dataset.sound;
+	        audio.dataset.button = event.target.dataset.button;
+	        audio.dataset.id = event.target.dataset.id;
+	        audio.play();
 	    }
-
-	    audio.src = '/media/sounds/' + event.target.dataset.sound;
-	    audio.dataset.button = event.target.dataset.button;
-	    // if (audio.readyState > 0) {
-	    //     audio.currentTime = 5;
-	    // }
-	    audio.play();
 	};
 
 /***/ },
 /* 26 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	function range(n) {
+	    return Array.apply(null, Array(n)).map(function (x, i) {
+	        return i;
+	    });
+	}
+
+	module.exports = function chunk(array, n) {
+	    return range(Math.ceil(array.length / n)).map(function (x, i) {
+	        return array.slice(i * n, i * n + n);
+	    });
+	};
+
+/***/ },
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _templateObject = _taggedTemplateLiteral(['<tr data-id="', '">\n        <td data-label="index">', '</td>\n        <td data-label="name">', '</td>\n        <td data-label="image">', '</td>\n        <td data-label="sound">', '</td>\n    </tr>'], ['<tr data-id="', '">\n        <td data-label="index">', '</td>\n        <td data-label="name">', '</td>\n        <td data-label="image">', '</td>\n        <td data-label="sound">', '</td>\n    </tr>']),
-	    _templateObject2 = _taggedTemplateLiteral(['<div class="col-xs-12 strech-vert">\n            <h2>Editor</h2>\n            <div class="row middle-xs strech-vert">\n                <ul class="col-xs-3 draggable-images images-list">\n                    ', '\n                </ul>\n                <ul class="col-xs-3 sounds-list draggable-images">\n                    ', '\n                </ul>\n                <div class="col-xs-6">\n                    <table>\n                    <thead>\n                        <tr>\n                            <td>#</td>\n                            <td>Название</td>\n                            <td>Иконка</td>\n                            <td>Звук</td>\n                        </tr>\n                    </thead>\n                    <tbody class="droppable-rows">\n                        ', '\n                    </tbody>\n                    </table>\n                </div>\n            </div>\n            <div class="row middle-xs">\n                <div class="col-xs-6">\n                    <button onclick=', '>Добавить строку</button>\n                </div>\n            </div>\n            <div class="row middle-xs">\n                <div class="col-xs-6">\n                    <code>\n                        <pre>\n                            ', '\n                        </pre>\n                    </code>\n                </div>\n            </div>\n        </div>'], ['<div class="col-xs-12 strech-vert">\n            <h2>Editor</h2>\n            <div class="row middle-xs strech-vert">\n                <ul class="col-xs-3 draggable-images images-list">\n                    ', '\n                </ul>\n                <ul class="col-xs-3 sounds-list draggable-images">\n                    ', '\n                </ul>\n                <div class="col-xs-6">\n                    <table>\n                    <thead>\n                        <tr>\n                            <td>#</td>\n                            <td>Название</td>\n                            <td>Иконка</td>\n                            <td>Звук</td>\n                        </tr>\n                    </thead>\n                    <tbody class="droppable-rows">\n                        ', '\n                    </tbody>\n                    </table>\n                </div>\n            </div>\n            <div class="row middle-xs">\n                <div class="col-xs-6">\n                    <button onclick=', '>Добавить строку</button>\n                </div>\n            </div>\n            <div class="row middle-xs">\n                <div class="col-xs-6">\n                    <code>\n                        <pre>\n                            ', '\n                        </pre>\n                    </code>\n                </div>\n            </div>\n        </div>']),
-	    _templateObject3 = _taggedTemplateLiteral(['<li class="image-preview" data-type="image" data-value="', '">\n                        <img src="/media/images/', '"/>\n                    </li>'], ['<li class="image-preview" data-type="image" data-value="', '">\n                        <img src="/media/images/', '"/>\n                    </li>']),
-	    _templateObject4 = _taggedTemplateLiteral(['<li class="sound-preivew" data-type="sound" data-value="', '">\n                        ', '\n                        </li>'], ['<li class="sound-preivew" data-type="sound" data-value="', '">\n                        ', '\n                        </li>']);
+	var _templateObject = _taggedTemplateLiteral(['<div class="col-xs-12 strech-vert">\n            <h2>Editor</h2>\n            <div class="row middle-xs strech-vert">\n                <ul class="col-xs-3 draggable-images images-list">\n                    ', '\n                </ul>\n                <ul class="col-xs-3 sounds-list draggable-images">\n                    ', '\n                </ul>\n                <div class="col-xs-6">\n                    <table>\n                    <thead>\n                        <tr>\n                            <td>#</td>\n                            <td>Название</td>\n                            <td>Иконка</td>\n                            <td>Звук</td>\n                        </tr>\n                    </thead>\n                    <tbody class="droppable-rows">\n                        ', '\n                    </tbody>\n                    </table>\n                </div>\n            </div>\n            <div class="row middle-xs">\n                <div class="col-xs-6">\n                    <button onclick=', '>Добавить строку</button>\n                </div>\n            </div>\n            <div class="row middle-xs">\n                <div class="col-xs-6">\n                    <code>\n                        <pre>\n                            ', '\n                        </pre>\n                    </code>\n                </div>\n            </div>\n        </div>'], ['<div class="col-xs-12 strech-vert">\n            <h2>Editor</h2>\n            <div class="row middle-xs strech-vert">\n                <ul class="col-xs-3 draggable-images images-list">\n                    ', '\n                </ul>\n                <ul class="col-xs-3 sounds-list draggable-images">\n                    ', '\n                </ul>\n                <div class="col-xs-6">\n                    <table>\n                    <thead>\n                        <tr>\n                            <td>#</td>\n                            <td>Название</td>\n                            <td>Иконка</td>\n                            <td>Звук</td>\n                        </tr>\n                    </thead>\n                    <tbody class="droppable-rows">\n                        ', '\n                    </tbody>\n                    </table>\n                </div>\n            </div>\n            <div class="row middle-xs">\n                <div class="col-xs-6">\n                    <button onclick=', '>Добавить строку</button>\n                </div>\n            </div>\n            <div class="row middle-xs">\n                <div class="col-xs-6">\n                    <code>\n                        <pre>\n                            ', '\n                        </pre>\n                    </code>\n                </div>\n            </div>\n        </div>']),
+	    _templateObject2 = _taggedTemplateLiteral(['<li class="image-preview" data-type="image" data-value="', '">\n                        <img src="/media/images/', '"/>\n                    </li>'], ['<li class="image-preview" data-type="image" data-value="', '">\n                        <img src="/media/images/', '"/>\n                    </li>']),
+	    _templateObject3 = _taggedTemplateLiteral(['<li class="sound-preivew" data-type="sound" data-value="', '">\n                        ', '\n                        </li>'], ['<li class="sound-preivew" data-type="sound" data-value="', '">\n                        ', '\n                        </li>']);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -3907,26 +3901,20 @@
 
 	var _yoYo2 = _interopRequireDefault(_yoYo);
 
-	function singleRow(_ref, index) {
-	    var name = _ref.name;
-	    var sound = _ref.sound;
-	    var image = _ref.image;
-	    var id = _ref.id;
+	var _componentsEditorRow = __webpack_require__(43);
 
-	    return (0, _yoYo2['default'])(_templateObject, id, index, name, image, sound);
-	}
+	var _componentsEditorRow2 = _interopRequireDefault(_componentsEditorRow);
 
 	module.exports = function main(state, actions) {
-	    console.log(state);
-	    return (0, _yoYo2['default'])(_templateObject2, state.images.map(function (singleImage) {
-	        return (0, _yoYo2['default'])(_templateObject3, singleImage, singleImage);
+	    return (0, _yoYo2['default'])(_templateObject, state.images.map(function (singleImage) {
+	        return (0, _yoYo2['default'])(_templateObject2, singleImage, singleImage);
 	    }), state.sounds.map(function (singleSound) {
-	        return (0, _yoYo2['default'])(_templateObject4, singleSound, singleSound);
-	    }), state.rows.map(singleRow), actions.addRow, JSON.stringify(state.rows, null, 4));
+	        return (0, _yoYo2['default'])(_templateObject3, singleSound, singleSound);
+	    }), state.rows.map(_componentsEditorRow2['default']), actions.addRow, JSON.stringify(state.rows, null, 4));
 	};
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3946,7 +3934,7 @@
 	};
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {  /* globals require, module */
@@ -3957,7 +3945,7 @@
 	   * Module dependencies.
 	   */
 
-	  var pathtoRegexp = __webpack_require__(30);
+	  var pathtoRegexp = __webpack_require__(31);
 
 	  /**
 	   * Module exports.
@@ -4572,10 +4560,10 @@
 
 	  page.sameOrigin = sameOrigin;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(29)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(30)))
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -4672,10 +4660,10 @@
 
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isarray = __webpack_require__(31)
+	var isarray = __webpack_require__(32)
 
 	/**
 	 * Expose `pathToRegexp`.
@@ -5068,7 +5056,7 @@
 
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports) {
 
 	module.exports = Array.isArray || function (arr) {
@@ -5077,14 +5065,14 @@
 
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 
-	var emitter = __webpack_require__(33);
-	var crossvent = __webpack_require__(38);
-	var classes = __webpack_require__(41);
+	var emitter = __webpack_require__(34);
+	var crossvent = __webpack_require__(39);
+	var classes = __webpack_require__(42);
 	var doc = document;
 	var documentElement = doc.documentElement;
 
@@ -5685,13 +5673,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 33 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var atoa = __webpack_require__(34);
-	var debounce = __webpack_require__(35);
+	var atoa = __webpack_require__(35);
+	var debounce = __webpack_require__(36);
 
 	module.exports = function emitter (thing, options) {
 	  var opts = options || {};
@@ -5745,19 +5733,19 @@
 
 
 /***/ },
-/* 34 */
+/* 35 */
 /***/ function(module, exports) {
 
 	module.exports = function atoa (a, n) { return Array.prototype.slice.call(a, n); }
 
 
 /***/ },
-/* 35 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var ticky = __webpack_require__(36);
+	var ticky = __webpack_require__(37);
 
 	module.exports = function debounce (fn, args, ctx) {
 	  if (!fn) { return; }
@@ -5768,7 +5756,7 @@
 
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(setImmediate) {var si = typeof setImmediate === 'function', tick;
@@ -5779,13 +5767,13 @@
 	}
 
 	module.exports = tick;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(37).setImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(38).setImmediate))
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(29).nextTick;
+	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(30).nextTick;
 	var apply = Function.prototype.apply;
 	var slice = Array.prototype.slice;
 	var immediateIds = {};
@@ -5861,16 +5849,16 @@
 	exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
 	  delete immediateIds[id];
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(37).setImmediate, __webpack_require__(37).clearImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(38).setImmediate, __webpack_require__(38).clearImmediate))
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 
-	var customEvent = __webpack_require__(39);
-	var eventmap = __webpack_require__(40);
+	var customEvent = __webpack_require__(40);
+	var eventmap = __webpack_require__(41);
 	var doc = global.document;
 	var addEvent = addEventEasy;
 	var removeEvent = removeEventEasy;
@@ -5972,7 +5960,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {
@@ -6027,7 +6015,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
@@ -6047,7 +6035,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6084,6 +6072,31 @@
 	  rm: rmClass
 	};
 
+
+/***/ },
+/* 43 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _templateObject = _taggedTemplateLiteral(['<tr data-id="', '">\n        <td data-label="index">', '</td>\n        <td data-label="name">', '</td>\n        <td data-label="image">', '</td>\n        <td data-label="sound">', '</td>\n    </tr>'], ['<tr data-id="', '">\n        <td data-label="index">', '</td>\n        <td data-label="name">', '</td>\n        <td data-label="image">', '</td>\n        <td data-label="sound">', '</td>\n    </tr>']);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+	var _yoYo = __webpack_require__(1);
+
+	var _yoYo2 = _interopRequireDefault(_yoYo);
+
+	module.exports = function singleRow(_ref, index) {
+	    var name = _ref.name;
+	    var sound = _ref.sound;
+	    var image = _ref.image;
+	    var id = _ref.id;
+
+	    return (0, _yoYo2['default'])(_templateObject, id, index, name, image, sound);
+	};
 
 /***/ }
 /******/ ]);

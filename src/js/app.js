@@ -8,7 +8,7 @@ import editor from 'pages/editor';
 import notfound from 'pages/notfound';
 import page from 'page';
 import dragula from 'dragula';
-var drake;
+
 var el = main(store.get(), actions);
 
 store.on('update', function(newValue) {
@@ -50,25 +50,16 @@ page();
 setTimeout(() => {
     // page('/editor');
 }, 200);
+
 actions.startModule();
 
 var audio = document.getElementById('audioplayer');
-audio.addEventListener('play', () => {
-    const buttonClass = event.target.dataset.button;
-    Array.from(document.querySelectorAll('.music-button')).forEach((oneButton) => {
-        if (!oneButton.classList.contains(buttonClass)) {
-            oneButton.classList.add('dim');
-        };
-    });
-    // console.log(document.querySelector(`.`));
+audio.addEventListener('durationchange', () => {
+    actions.toggleSound(true);
+    // actions.setActive(event.target.dataset.id);
 });
 audio.addEventListener('ended', () => {
-    Array.from(document.querySelectorAll('.music-button')).forEach((oneButton) => {
-        oneButton.classList.remove('dim');
-    });
+    actions.toggleSound(false);
+    // actions.setActive(false);
 });
-
-document.body.addEventListener('touchmove', (event) => {
-    event.preventDefault();
-}, false);
 

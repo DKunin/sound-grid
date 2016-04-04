@@ -6,6 +6,8 @@ const state = {
     rows: [],
     images: [],
     sounds: [],
+    active: false,
+    playing: false,
     page: 'main'
 };
 

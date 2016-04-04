@@ -1,16 +1,7 @@
 import yo from 'yo-yo';
-
-function singleRow({ name, sound, image, id }, index) {
-    return yo`<tr data-id="${id}">
-        <td data-label="index">${index}</td>
-        <td data-label="name">${name}</td>
-        <td data-label="image">${image}</td>
-        <td data-label="sound">${sound}</td>
-    </tr>`;
-}
+import singleRow from 'components/editor-row';
 
 module.exports = function main(state, actions) {
-    console.log(state);
     return yo`<div class="col-xs-12 strech-vert">
             <h2>Editor</h2>
             <div class="row middle-xs strech-vert">
