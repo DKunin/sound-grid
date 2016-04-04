@@ -126,6 +126,26 @@
 	}, 200);
 	_actionsActions2['default'].startModule();
 
+	var audio = document.getElementById('audioplayer');
+	audio.addEventListener('play', function () {
+	    var buttonClass = event.target.dataset.button;
+	    Array.from(document.querySelectorAll('.music-button')).forEach(function (oneButton) {
+	        if (!oneButton.classList.contains(buttonClass)) {
+	            oneButton.classList.add('dim');
+	        };
+	    });
+	    // console.log(document.querySelector(`.`));
+	});
+	audio.addEventListener('ended', function () {
+	    Array.from(document.querySelectorAll('.music-button')).forEach(function (oneButton) {
+	        oneButton.classList.remove('dim');
+	    });
+	});
+
+	document.body.addEventListener('touchmove', function (event) {
+	    event.preventDefault();
+	}, false);
+
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
@@ -191,7 +211,7 @@
 	  'feMorphology', 'feOffset', 'fePointLight', 'feSpecularLighting',
 	  'feSpotLight', 'feTile', 'feTurbulence', 'filter', 'font', 'font-face',
 	  'font-face-format', 'font-face-name', 'font-face-src', 'font-face-uri',
-	  'foreignObject', 'glyph', 'glyphRef', 'hkern', 'image', 'line',
+	  'foreignObject', 'g', 'glyph', 'glyphRef', 'hkern', 'image', 'line',
 	  'linearGradient', 'marker', 'mask', 'metadata', 'missing-glyph', 'mpath',
 	  'path', 'pattern', 'polygon', 'polyline', 'radialGradient', 'rect',
 	  'set', 'stop', 'switch', 'symbol', 'text', 'textPath', 'title', 'tref',
@@ -3788,8 +3808,8 @@
 
 	'use strict';
 
-	var _templateObject = _taggedTemplateLiteral(['<div class="col-xs-12 main-grid">\n        <a href=\'/editor\' class=\'hidden\'>editor</a>\n              ', '\n        </div>'], ['<div class="col-xs-12 main-grid">\n        <a href=\'/editor\' class=\'hidden\'>editor</a>\n              ', '\n        </div>']),
-	    _templateObject2 = _taggedTemplateLiteral(['<div class="row middle-xs">', '</div>'], ['<div class="row middle-xs">', '</div>']);
+	var _templateObject = _taggedTemplateLiteral(['<div class="col-xs-12 main-grid">\n              ', '\n        </div>'], ['<div class="col-xs-12 main-grid">\n              ', '\n        </div>']),
+	    _templateObject2 = _taggedTemplateLiteral(['<div class="row middle-xs half-screen-height">', '</div>'], ['<div class="row middle-xs half-screen-height">', '</div>']);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -3829,7 +3849,7 @@
 
 	'use strict';
 
-	var _templateObject = _taggedTemplateLiteral(['<button class="col-xs-4 music-button ', '" data-name=', ' data-sound=', ' onclick=', ' ontouchstart=', ' style="background-image: url(\'/media/images/', '\');">\n      <label>', '</label></button>'], ['<button class="col-xs-4 music-button ', '" data-name=', ' data-sound=', ' onclick=', ' ontouchstart=', ' style="background-image: url(\'/media/images/', '\');">\n      <label>', '</label></button>']);
+	var _templateObject = _taggedTemplateLiteral(['<button class="button-', ' col-xs-4 music-button ', '" data-name=', ' data-sound=', ' data-button="button-', '" onclick=', ' ontouchstart=', ' style="background-image: url(\'/media/images/', '\');">\n      <label>', '</label></button>'], ['<button class="button-', ' col-xs-4 music-button ', '" data-name=', ' data-sound=', ' data-button="button-', '" onclick=', ' ontouchstart=', ' style="background-image: url(\'/media/images/', '\');">\n      <label>', '</label></button>']);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -3844,7 +3864,7 @@
 	var _modulesPlaysound2 = _interopRequireDefault(_modulesPlaysound);
 
 	module.exports = function singleButton(item, actions) {
-	  return (0, _yoYo2['default'])(_templateObject, item.image === '-' ? 'show-label' : '', item.name, item.sound, _modulesPlaysound2['default'], _modulesPlaysound2['default'], item.image, item.name);
+	  return (0, _yoYo2['default'])(_templateObject, item.id, item.image === '-' ? 'show-label' : '', item.name, item.sound, item.id, _modulesPlaysound2['default'], _modulesPlaysound2['default'], item.image, item.name);
 	};
 
 /***/ },
@@ -3861,9 +3881,10 @@
 	    }
 
 	    audio.src = '/media/sounds/' + event.target.dataset.sound;
-	    if (audio.readyState > 0) {
-	        audio.currentTime = 5;
-	    }
+	    audio.dataset.button = event.target.dataset.button;
+	    // if (audio.readyState > 0) {
+	    //     audio.currentTime = 5;
+	    // }
 	    audio.play();
 	};
 

@@ -34,41 +34,5 @@
         "name": "Лошадь",
         "sound": "horse.mp3",
         "image": "beautiful-running-horse.jpg"
-    },
-    {
-        "id": "7",
-        "name": "Овца",
-        "sound": "sheep.mp3",
-        "image": "Lleyn_sheep.jpg"
-    },
-    {
-        "id": "8",
-        "name": "Петух",
-        "sound": "rooster.mp3",
-        "image": "Fantastic-Rooster-Of-Img-2039.jpg"
-    },
-    {
-        "id": "9",
-        "name": "Курица",
-        "sound": "chicken.mp3",
-        "image": "10-faqs-answers-about-chicken-keeping-53c2ece3f2d5c.jpg"
-    },
-    {
-        "id": "10",
-        "name": "Мышь",
-        "sound": "mouse.mp3",
-        "image": "10_0ffa586135a063a3dc664214c2948bc6.jpg"
-    },
-    {
-        "id": "11",
-        "name": "Гусь",
-        "sound": "geese.mp3",
-        "image": "Domesticated_greylag_goose_in_skagen_denmark_6th_of_may_2006.jpg"
-    },
-    {
-        "id": "12",
-        "name": "Индюк",
-        "sound": "turkey.mp3",
-        "image": "turkey-07.jpg"
     }
 ]

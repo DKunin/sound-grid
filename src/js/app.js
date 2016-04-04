@@ -51,3 +51,24 @@ setTimeout(() => {
     // page('/editor');
 }, 200);
 actions.startModule();
+
+var audio = document.getElementById('audioplayer');
+audio.addEventListener('play', () => {
+    const buttonClass = event.target.dataset.button;
+    Array.from(document.querySelectorAll('.music-button')).forEach((oneButton) => {
+        if (!oneButton.classList.contains(buttonClass)) {
+            oneButton.classList.add('dim');
+        };
+    });
+    // console.log(document.querySelector(`.`));
+});
+audio.addEventListener('ended', () => {
+    Array.from(document.querySelectorAll('.music-button')).forEach((oneButton) => {
+        oneButton.classList.remove('dim');
+    });
+});
+
+document.body.addEventListener('touchmove', (event) => {
+    event.preventDefault();
+}, false);
+

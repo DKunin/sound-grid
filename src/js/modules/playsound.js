@@ -6,8 +6,9 @@ module.exports = function playSound(event) {
     }
 
     audio.src = '/media/sounds/' + event.target.dataset.sound;
-    if (audio.readyState > 0) {
-        audio.currentTime = 5;
-    }
+    audio.dataset.button = event.target.dataset.button;
+    // if (audio.readyState > 0) {
+    //     audio.currentTime = 5;
+    // }
     audio.play();
 };
