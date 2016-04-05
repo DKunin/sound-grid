@@ -43,6 +43,12 @@ module.exports = {
         state.get().set('playing', status);
     },
     setActive(id) {
+        console.log('active', id);
         state.get().set('active', id);
+    },
+    updateState(object) {
+        Object.keys(object).forEach(singleKey => {
+            state.get().set(singleKey, object[singleKey]);
+        });
     }
 };

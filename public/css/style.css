@@ -10,6 +10,7 @@
     outline: 0;
     -webkit-user-select: none; 
     user-select: none;
+    opacity: .8;
 }
 
 .music-button label {
@@ -20,11 +21,7 @@
     display: block;
 }
 
-.playing .music-button {
-    opacity: .3;
-}
-
-.playing .music-button.shine {
+.music-button.shine {
     opacity: 1;
 }
 

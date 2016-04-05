@@ -68,15 +68,15 @@
 
 	var _pagesEditor2 = _interopRequireDefault(_pagesEditor);
 
-	var _pagesNotfound = __webpack_require__(28);
+	var _pagesNotfound = __webpack_require__(29);
 
 	var _pagesNotfound2 = _interopRequireDefault(_pagesNotfound);
 
-	var _page = __webpack_require__(29);
+	var _page = __webpack_require__(30);
 
 	var _page2 = _interopRequireDefault(_page);
 
-	var _dragula = __webpack_require__(33);
+	var _dragula = __webpack_require__(34);
 
 	var _dragula2 = _interopRequireDefault(_dragula);
 
@@ -127,13 +127,8 @@
 	_actionsActions2['default'].startModule();
 
 	var audio = document.getElementById('audioplayer');
-	audio.addEventListener('durationchange', function () {
-	    _actionsActions2['default'].toggleSound(true);
-	    // actions.setActive(event.target.dataset.id);
-	});
 	audio.addEventListener('ended', function () {
-	    _actionsActions2['default'].toggleSound(false);
-	    // actions.setActive(false);
+	    _actionsActions2['default'].setActive(false);
 	});
 
 /***/ },
@@ -201,7 +196,7 @@
 	  'feMorphology', 'feOffset', 'fePointLight', 'feSpecularLighting',
 	  'feSpotLight', 'feTile', 'feTurbulence', 'filter', 'font', 'font-face',
 	  'font-face-format', 'font-face-name', 'font-face-src', 'font-face-uri',
-	  'foreignObject', 'g', 'glyph', 'glyphRef', 'hkern', 'image', 'line',
+	  'foreignObject', 'glyph', 'glyphRef', 'hkern', 'image', 'line',
 	  'linearGradient', 'marker', 'mask', 'metadata', 'missing-glyph', 'mpath',
 	  'path', 'pattern', 'polygon', 'polyline', 'radialGradient', 'rect',
 	  'set', 'stop', 'switch', 'symbol', 'text', 'textPath', 'title', 'tref',
@@ -2274,7 +2269,13 @@
 	        _storeStore2['default'].get().set('playing', status);
 	    },
 	    setActive: function setActive(id) {
+	        console.log('active', id);
 	        _storeStore2['default'].get().set('active', id);
+	    },
+	    updateState: function updateState(object) {
+	        Object.keys(object).forEach(function (singleKey) {
+	            _storeStore2['default'].get().set(singleKey, object[singleKey]);
+	        });
 	    }
 	};
 
@@ -3814,7 +3815,7 @@
 	module.exports = function main(state, actions) {
 	  return (0, _yoYo2['default'])(_templateObject, state.playing ? 'playing' : '', (0, _modulesChunk2['default'])(state.rows || [], 3).map(function (singleRow) {
 	    return (0, _yoYo2['default'])(_templateObject2, singleRow.map(function (singleButton) {
-	      return (0, _componentsSingleButton2['default'])(singleButton, actions, state);
+	      return (0, _componentsSingleButton2['default'])(singleButton, state, actions);
 	    }));
 	  }));
 	};
@@ -3839,8 +3840,8 @@
 
 	var _modulesPlaysound2 = _interopRequireDefault(_modulesPlaysound);
 
-	module.exports = function singleButton(item, actions, state) {
-	  return (0, _yoYo2['default'])(_templateObject, item.id == state.active ? 'shine' : '', item.id, item.image === '-' ? 'show-label' : '', item.name, item.sound, item.id, item.id, _modulesPlaysound2['default'].bind(this, state), _modulesPlaysound2['default'].bind(this, state), item.image, item.name);
+	module.exports = function singleButton(item, state, actions) {
+	  return (0, _yoYo2['default'])(_templateObject, item.id == state.active ? 'shine' : '', item.id, item.image === '-' ? 'show-label' : '', item.name, item.sound, item.id, item.id, _modulesPlaysound2['default'].bind(this, state, actions), _modulesPlaysound2['default'].bind(this, state, actions), item.image, item.name);
 	};
 
 /***/ },
@@ -3849,18 +3850,20 @@
 
 	'use strict';
 
-	module.exports = function playSound(state, event) {
-	    if (state.playing) {
+	var audio = document.getElementById('audioplayer');
+
+	module.exports = function playSound(state, actions, event) {
+	    if (!audio.paused) {
 	        return false;
 	    } else {
-	        var audio = document.getElementById('audioplayer');
-	        audio.pause();
 	        if (event.target.dataset.name === 'stop' || !event.target.dataset.sound) {
 	            return;
 	        }
+	        actions.setActive(event.target.dataset.id);
+	        audio.pause();
 	        audio.src = '/media/sounds/' + event.target.dataset.sound;
-	        audio.dataset.button = event.target.dataset.button;
-	        audio.dataset.id = event.target.dataset.id;
+	        // audio.dataset.button = event.target.dataset.button;
+	        // audio.dataset.id = event.target.dataset.id;
 	        audio.play();
 	    }
 	};
@@ -3901,7 +3904,7 @@
 
 	var _yoYo2 = _interopRequireDefault(_yoYo);
 
-	var _componentsEditorRow = __webpack_require__(43);
+	var _componentsEditorRow = __webpack_require__(28);
 
 	var _componentsEditorRow2 = _interopRequireDefault(_componentsEditorRow);
 
@@ -3915,6 +3918,31 @@
 
 /***/ },
 /* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _templateObject = _taggedTemplateLiteral(['<tr data-id="', '">\n        <td data-label="index">', '</td>\n        <td data-label="name">', '</td>\n        <td data-label="image">', '</td>\n        <td data-label="sound">', '</td>\n    </tr>'], ['<tr data-id="', '">\n        <td data-label="index">', '</td>\n        <td data-label="name">', '</td>\n        <td data-label="image">', '</td>\n        <td data-label="sound">', '</td>\n    </tr>']);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+	var _yoYo = __webpack_require__(1);
+
+	var _yoYo2 = _interopRequireDefault(_yoYo);
+
+	module.exports = function singleRow(_ref, index) {
+	    var name = _ref.name;
+	    var sound = _ref.sound;
+	    var image = _ref.image;
+	    var id = _ref.id;
+
+	    return (0, _yoYo2['default'])(_templateObject, id, index, name, image, sound);
+	};
+
+/***/ },
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3934,7 +3962,7 @@
 	};
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {  /* globals require, module */
@@ -3945,7 +3973,7 @@
 	   * Module dependencies.
 	   */
 
-	  var pathtoRegexp = __webpack_require__(31);
+	  var pathtoRegexp = __webpack_require__(32);
 
 	  /**
 	   * Module exports.
@@ -4560,10 +4588,10 @@
 
 	  page.sameOrigin = sameOrigin;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(30)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(31)))
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -4660,10 +4688,10 @@
 
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isarray = __webpack_require__(32)
+	var isarray = __webpack_require__(33)
 
 	/**
 	 * Expose `pathToRegexp`.
@@ -5056,7 +5084,7 @@
 
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports) {
 
 	module.exports = Array.isArray || function (arr) {
@@ -5065,14 +5093,14 @@
 
 
 /***/ },
-/* 33 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 
-	var emitter = __webpack_require__(34);
-	var crossvent = __webpack_require__(39);
-	var classes = __webpack_require__(42);
+	var emitter = __webpack_require__(35);
+	var crossvent = __webpack_require__(40);
+	var classes = __webpack_require__(43);
 	var doc = document;
 	var documentElement = doc.documentElement;
 
@@ -5673,13 +5701,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 34 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var atoa = __webpack_require__(35);
-	var debounce = __webpack_require__(36);
+	var atoa = __webpack_require__(36);
+	var debounce = __webpack_require__(37);
 
 	module.exports = function emitter (thing, options) {
 	  var opts = options || {};
@@ -5733,19 +5761,19 @@
 
 
 /***/ },
-/* 35 */
+/* 36 */
 /***/ function(module, exports) {
 
 	module.exports = function atoa (a, n) { return Array.prototype.slice.call(a, n); }
 
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var ticky = __webpack_require__(37);
+	var ticky = __webpack_require__(38);
 
 	module.exports = function debounce (fn, args, ctx) {
 	  if (!fn) { return; }
@@ -5756,7 +5784,7 @@
 
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(setImmediate) {var si = typeof setImmediate === 'function', tick;
@@ -5767,13 +5795,13 @@
 	}
 
 	module.exports = tick;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(38).setImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(39).setImmediate))
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(30).nextTick;
+	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(31).nextTick;
 	var apply = Function.prototype.apply;
 	var slice = Array.prototype.slice;
 	var immediateIds = {};
@@ -5849,16 +5877,16 @@
 	exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
 	  delete immediateIds[id];
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(38).setImmediate, __webpack_require__(38).clearImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(39).setImmediate, __webpack_require__(39).clearImmediate))
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 
-	var customEvent = __webpack_require__(40);
-	var eventmap = __webpack_require__(41);
+	var customEvent = __webpack_require__(41);
+	var eventmap = __webpack_require__(42);
 	var doc = global.document;
 	var addEvent = addEventEasy;
 	var removeEvent = removeEventEasy;
@@ -5960,7 +5988,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {
@@ -6015,7 +6043,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
@@ -6035,7 +6063,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6072,31 +6100,6 @@
 	  rm: rmClass
 	};
 
-
-/***/ },
-/* 43 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _templateObject = _taggedTemplateLiteral(['<tr data-id="', '">\n        <td data-label="index">', '</td>\n        <td data-label="name">', '</td>\n        <td data-label="image">', '</td>\n        <td data-label="sound">', '</td>\n    </tr>'], ['<tr data-id="', '">\n        <td data-label="index">', '</td>\n        <td data-label="name">', '</td>\n        <td data-label="image">', '</td>\n        <td data-label="sound">', '</td>\n    </tr>']);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-	var _yoYo = __webpack_require__(1);
-
-	var _yoYo2 = _interopRequireDefault(_yoYo);
-
-	module.exports = function singleRow(_ref, index) {
-	    var name = _ref.name;
-	    var sound = _ref.sound;
-	    var image = _ref.image;
-	    var id = _ref.id;
-
-	    return (0, _yoYo2['default'])(_templateObject, id, index, name, image, sound);
-	};
 
 /***/ }
 /******/ ]);

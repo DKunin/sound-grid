@@ -54,12 +54,7 @@ setTimeout(() => {
 actions.startModule();
 
 var audio = document.getElementById('audioplayer');
-audio.addEventListener('durationchange', () => {
-    actions.toggleSound(true);
-    // actions.setActive(event.target.dataset.id);
-});
 audio.addEventListener('ended', () => {
-    actions.toggleSound(false);
-    // actions.setActive(false);
+    actions.setActive(false);
 });
 
