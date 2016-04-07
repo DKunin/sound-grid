@@ -10,8 +10,6 @@ module.exports = function playSound(state, actions, event) {
         actions.setActive(event.target.dataset.id);
         audio.pause();
         audio.src = '/media/sounds/' + event.target.dataset.sound;
-        // audio.dataset.button = event.target.dataset.button;
-        // audio.dataset.id = event.target.dataset.id;
         audio.play();
     }
 };

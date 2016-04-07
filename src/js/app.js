@@ -11,13 +11,12 @@ import dragula from 'dragula';
 
 var el = main(store.get(), actions);
 
-store.on('update', function(newValue) {
-    var state = store.get();
-    if (state.page === 'main') {
-        yo.update(el, main(state, actions));
+store.on('update', function(newState) {
+    if (newState.page === 'main') {
+        yo.update(el, main(newState, actions));
     }
-    if (state.page === 'editor') {
-        yo.update(el, editor(state, actions));
+    if (newState.page === 'editor') {
+        yo.update(el, editor(newState, actions));
     }
 });
 

@@ -6,19 +6,19 @@ module.exports = {
         request
             .get('/rows')
             .end((err, data) => {
-                state.get().set('rows', JSON.parse(data.text));
+                state.set('rows', JSON.parse(data.text));
             });
 
         request
             .get('/resource/sounds')
             .end((err, data) => {
-                state.get().set('sounds', data.body);
+                state.set('sounds', data.body);
             });
 
         request
             .get('/resource/images')
             .end((err, data) => {
-                state.get().set('images', data.body);
+                state.set('images', data.body);
             });
     },
     updateSource(updateObject) {
@@ -26,29 +26,29 @@ module.exports = {
             .put('/rows')
             .send(updateObject)
             .end((err, data) => {
-                state.get().set('rows', data.body);
+                state.set('rows', data.body);
             });
     },
     addRow(updateObject) {
         request
             .post('/rows')
             .end((err, data) => {
-                state.get().set('rows', data.body);
+                state.set('rows', data.body);
             });
     },
     setPage(page) {
-        state.get().set('page', page);
+        state.set('page', page);
     },
     toggleSound(status) {
-        state.get().set('playing', status);
+        state.set('playing', status);
     },
     setActive(id) {
         console.log('active', id);
-        state.get().set('active', id);
+        state.set('active', id);
     },
     updateState(object) {
         Object.keys(object).forEach(singleKey => {
-            state.get().set(singleKey, object[singleKey]);
+            state.set(singleKey, object[singleKey]);
         });
     }
 };
